@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: quarkus
+      POSTGRES_PASSWORD: quarkus
+      POSTGRES_DB: quarkus
+    ports:
+      - "5432:5432"
+    networks:
+      - quarkus-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quarkus"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  quarkus-native:
+    build:
+      context: .
+      dockerfile: quarkus-graalvm-vs-jvm/src/main/docker/Dockerfile.native
+    image: quarkus-native
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - quarkus-net
+
+  quarkus-jvm:
+    build:
+      context: .
+      dockerfile: quarkus-graalvm-vs-jvm/src/main/docker/Dockerfile.jvm
+    image: quarkus-jvm
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    networks:
+      - quarkus-net
+
+  springboot-app:
+    build:
+      context: ./springboot-jvm
+      dockerfile: Dockerfile
+    image: springboot-app
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    ports:
+      - "8083:8083"
+    networks:
+      - quarkus-net
+
+networks:
+  quarkus-net:
+

@@ -30,7 +30,7 @@ public class DatabaseService {
         long start = System.nanoTime();
 
         // 🧮 Calcular suma de los 10000 primeros números primos
-        long primeSum = sumFirstNPrimes(500_000);
+        long primeSum = sumFirstNPrimes(1000_000);
 
         // ⏱️ Fin tiempo
         long end = System.nanoTime();

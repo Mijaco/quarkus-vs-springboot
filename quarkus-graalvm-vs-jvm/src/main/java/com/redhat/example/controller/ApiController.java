@@ -16,6 +16,7 @@ import org.jboss.logging.Logger;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>
@@ -52,5 +53,20 @@ public class ApiController {
     public List<Calculator> results() {
         LOG.debug(String.format("getting result"));
         return databaseService.getResult();
+    }
+
+    @GET
+    @Path("/prime")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Object> getNthPrime(@QueryParam("n") int n) {
+        long start = System.currentTimeMillis();
+        long prime = calculateService.findNthPrime(n);
+        long duration = System.currentTimeMillis() - start;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("nthPrime", prime);
+        response.put("position", n);
+        response.put("durationInMillis", duration);
+        return response;
     }
 }

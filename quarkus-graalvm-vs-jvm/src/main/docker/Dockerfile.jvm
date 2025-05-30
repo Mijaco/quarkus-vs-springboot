@@ -1,0 +1,9 @@
+FROM eclipse-temurin:17-jdk
+WORKDIR /work
+COPY quarkus-graalvm-vs-jvm/target/quarkus-app/lib/ /work/lib/
+COPY quarkus-graalvm-vs-jvm/target/quarkus-app/*.jar /work/
+COPY quarkus-graalvm-vs-jvm/target/quarkus-app/app/ /work/app/
+COPY quarkus-graalvm-vs-jvm/target/quarkus-app/quarkus/ /work/quarkus/
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/work/quarkus-run.jar"]
+
